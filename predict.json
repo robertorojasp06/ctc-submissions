@@ -1,0 +1,13 @@
+{
+    "detection": {
+        "f_maps": 8,
+        "patch_size": [25, 128, 128],
+        "min_sigma": 1,
+        "max_sigma": 2,
+        "threshold": 0.5
+    },
+    "segmentation": {
+        "f_maps": 8,
+        "patch_size": [9, 48, 48]
+    }
+}
