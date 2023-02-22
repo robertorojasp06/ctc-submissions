@@ -3,16 +3,18 @@ import torch.nn.functional as F
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
-from skimage.feature import blob_log
+from skimage.filters import threshold_otsu
 
 from utils.splitting import Splitter
 from detection.transforms import ToTensorImage, Standardize
+from utils.peaks import find_peaks
 
 PATCH_SIZE = (25, 128, 128)
-BLOB_DETECTION = {
-    'min_sigma': 1,
-    'max_sigma': 2,
-    'threshold': 0.5
+PEAKS_DETECTION = {
+    'window_size': (5, 5, 5),
+    'min_val': 0.5,
+    'threshold': 0.25,
+    'mode': 'reflect'
 }
 
 
@@ -53,11 +55,11 @@ class Detection:
 
 class Detector:
     def __init__(self, model, patch_size=PATCH_SIZE,
-                 blob_params=BLOB_DETECTION, device=torch.device('cpu')):
+                 peaks_params=PEAKS_DETECTION, device=torch.device('cpu')):
         self.model = model.to(device)
         self.patch_size = patch_size
         self.stride = patch_size
-        self.blob_params = blob_params
+        self.peaks_params = peaks_params
         self._device = device
         self.to_tensor_image = ToTensorImage()
         self.to_normalized = Standardize()
@@ -75,10 +77,12 @@ class Detector:
         # Split volume
         splitter = Splitter(self.patch_size, self.stride)
         patches = splitter.split(volume)
+        # Filter out background patches (with all pixels beeing background)
+        otsu_thr = threshold_otsu(volume)
         patches = [
             Patch(patch[0], patch[1])
             for patch in patches
-            if np.max(patch[0]) > 0
+            if np.any(patch[0] > otsu_thr)
         ]
         # Run model on patches
         dataset = PatchDataset(
@@ -97,19 +101,21 @@ class Detector:
             patch_image = patch['image'].to(self.device)
             output = self.model(patch_image)
             output_map = F.softmax(torch.squeeze(output), dim=0).cpu().detach().numpy()[1]
-            # Detect blobs
-            blobs = blob_log(
+            # Detect peaks
+            peaks = find_peaks(
                 output_map,
-                self.blob_params['min_sigma'],
-                self.blob_params['max_sigma'],
-                num_sigma = self.blob_params['max_sigma'] - self.blob_params['min_sigma'] + 1,
-                threshold=self.blob_params['threshold']
+                self.peaks_params['window_size'],
+                self.peaks_params['min_val'],
+                self.peaks_params['threshold'],
+                self.peaks_params['mode']
             )
+            peaks = np.where(peaks == True)
+            peaks = list(zip(*peaks))
             # Update coordinates relative to the volume
             corner_from_volume = patch['corner'][0].numpy()
             patch_detections = [
-                Detection(corner_from_volume + np.array([blob[0], blob[1], blob[2]]).astype('int'))
-                for blob in blobs
+                Detection(corner_from_volume + np.array([peak[0], peak[1], peak[2]]).astype('int'))
+                for peak in peaks
             ]
             patch_detections = [
                 det

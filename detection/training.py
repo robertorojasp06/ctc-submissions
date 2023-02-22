@@ -7,7 +7,6 @@ import torch.nn as nn
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F
-from skimage.feature import blob_log
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
@@ -16,14 +15,16 @@ from detection import transforms as custom_transforms
 from segmentation.performance import BinaryMetrics
 from detection.performance import VolumeEvaluator
 from augmentation.detection import OnlineAugmentation
+from utils.peaks import find_peaks
 
 CPU_DEVICE = torch.device('cpu')
 FOREGROUND_LABEL = 255
 NUM_WORKERS = 4
-BLOB_DETECTION = {
-    'min_sigma': 1,
-    'max_sigma': 2,
-    'threshold': 0.5
+PEAKS_DETECTION = {
+    'window_size': (5, 5, 5),
+    'min_val': 0.5,
+    'threshold': 0.25,
+    'mode': 'reflect'
 }
 
 
@@ -213,16 +214,18 @@ class Trainer:
                     output_maps = F.softmax(torch.squeeze(val_output), dim=0)
                     output_mask = torch.argmax(output_maps, dim=0)
                     output_map_npy = output_maps.cpu().detach().numpy()[1]
-                    blobs = blob_log(
+                    peaks = find_peaks(
                         output_map_npy,
-                        BLOB_DETECTION['min_sigma'],
-                        BLOB_DETECTION['max_sigma'],
-                        BLOB_DETECTION['max_sigma'] - BLOB_DETECTION['min_sigma'] + 1,
-                        BLOB_DETECTION['threshold']
+                        PEAKS_DETECTION['window_size'],
+                        PEAKS_DETECTION['min_val'],
+                        PEAKS_DETECTION['threshold'],
+                        PEAKS_DETECTION['mode']
                     )
+                    peaks = np.where(peaks == True)
+                    peaks = list(zip(*peaks))
                     detections = [
-                        np.array([blob[0], blob[1], blob[2]]).astype('int')
-                        for blob in blobs
+                        np.array([peak[0], peak[1], peak[2]]).astype('int')
+                        for peak in peaks
                     ]
                     targets = pd.read_csv(
                         os.path.join(

@@ -9,12 +9,12 @@ import torch
 from pipeline.detection import Detector
 from pipeline.segmentation import Segmentator
 
-
 DET_PARAMS = {
     'patch_size': (25, 128, 128),
-    'min_sigma': 1,
-    'max_sigma': 2,
-    'threshold': 0.5
+    'window_size': (5, 5, 5),
+    'min_val': 0.5,
+    'threshold': 0.25,
+    'mode': 'reflect'
 }
 SEG_PARAMS = {
     'patch_size': (5, 48, 48)
@@ -32,14 +32,14 @@ class Pipeline:
 
     @property
     def detector(self):
-        blob_params = {
+        peaks_params = {
             key: DET_PARAMS[key]
-            for key in ('min_sigma', 'max_sigma', 'threshold')
+            for key in ('window_size', 'min_val', 'threshold', 'mode')
         }
         return Detector(
             self.det_model,
             self.det_params['patch_size'],
-            blob_params,
+            peaks_params,
             self.device
         )
 
