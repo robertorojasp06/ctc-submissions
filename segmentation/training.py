@@ -142,7 +142,7 @@ class Trainer:
                 num_workers=num_workers
             )
         }
-        if path_to_val_images:
+        if path_to_val_csv:
             datasets.update({
                 'val': NucleiSegmentationDataset(
                     path_to_val_images,
@@ -184,7 +184,7 @@ class Trainer:
                 loss.backward()
                 optimizer.step()
             # Measure loss on validation data
-            if path_to_val_images:
+            if path_to_val_csv:
                 model.eval()
                 epoch_val_loss = []
                 for val_batch in tqdm(dataloders['val']):
