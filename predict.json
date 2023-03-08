@@ -1,6 +1,6 @@
 {
     "detection": {
-        "f_maps": 8,
+        "f_maps": 16,
         "patch_size": [25, 128, 128],
         "window_size": [5, 5, 5],
         "min_val": 0.5,
