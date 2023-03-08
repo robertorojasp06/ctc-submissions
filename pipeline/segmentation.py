@@ -66,14 +66,14 @@ class Segmentator:
     def segment(self, volume, detections):
         # Extract patches centered on detections
         patches = extract_patches(volume, detections, self.patch_size)
-        patches = [
-            Patch(patch, center, counter + 1)
+        patches = {
+            counter + 1: Patch(patch, center, counter + 1)
             for counter, (patch, center) in enumerate(zip(patches, detections))
             if np.max(patch) > 0
-        ]
+        }
         # Run model on patches
         dataset = PatchDataset(
-            patches,
+            list(patches.values()),
             self.to_tensor_image,
             self.to_normalized
         )
@@ -91,12 +91,11 @@ class Segmentator:
             output = self.model(patch_image)
             maps = F.softmax(torch.squeeze(output), dim=0)
             mask = torch.argmax(maps, dim=0).cpu().detach().numpy().astype('bool')
-            patch_object = next((x for x in patches if x.label == label), None)
-            if patch_object:
-                patch_object.mask = mask
+            patch_object = patches.get(label)
+            patch_object.mask = mask
             output_volume = insert_patch(
                 output_volume,
                 (mask * label).astype('int'),
                 center
             )
-        return patches, output_volume
+        return list(patches.values()), output_volume

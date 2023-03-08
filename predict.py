@@ -87,9 +87,9 @@ def main():
         seg_params=params['segmentation'],
         device=device
     )
-    paths_to_volumes = glob(
+    paths_to_volumes = sorted(glob(
         os.path.join(args.path_to_volumes, '*' + args.extension)
-    )
+    ))
     for path in paths_to_volumes:
         filename = os.path.basename(path)
         volume = io.imread(path)
