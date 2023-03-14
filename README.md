@@ -14,7 +14,10 @@ of the central nucleus for each patch.
 ## Setup
 Before running any script, you have to setup this repository in your local machine:
 1. Open a terminal inside the local repository folder.
-2. Create the conda environment `ctc-second-submission` by running: ```./create_env.sh```
+2. Create the conda environment `ctc-second-submission` by running:
+```
+./create_env.sh
+```
 
 ## How to run executables to reproduce submitted results
 - Download models
