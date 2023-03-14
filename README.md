@@ -38,13 +38,13 @@ Before running any script, you have to setup this repository in your local machi
 ```
 python train_detection.py 'data/detection/images/' 'data/detection/masks/' 'data/detection/training_patches.csv' 'models/detection/' --learning_rate 0.01 --foreground_weight 0.75 --epochs 50 --path_to_val_csv 'data/detection/evaluation_patches.csv' --f_maps 16 --use_gpu 
 ```
-**Note**: run `train_detection.py --help` to see optional arguments.
+**Note**: run `python train_detection.py --help` to see optional arguments.
 
 5. Train segmentation model:
 ```
 python train_segmentation.py 'data/segmentation/images/' 'data/segmentation/masks/' 'data/segmentation/training_patches.csv' 'models/segmentation/' --learning_rate 0.01 --foreground_weight 0.7 --epochs 100 --path_to_val_csv 'data/segmentation/evaluation_patches.csv' --f_maps 8 --use_gpu
 ```
-**Note**: run `train_segmentation.py --help` to see optional arguments.
+**Note**: run `python train_segmentation.py --help` to see optional arguments.
 
 ## How to predict segmentation masks
 1. Download the trained models from [this link](https://drive.google.com/file/d/1LMNqzilxm0us4UULOT3LHTkkybe5-uTz/view?usp=share_link).
@@ -53,4 +53,4 @@ python train_segmentation.py 'data/segmentation/images/' 'data/segmentation/mask
 ```
 python predict.py <path/to/volumes> <path/to/output> --use_gpu
 ```
-**Note**: run `predict.py --help` to see optional arguments.
+**Note**: run `python predict.py --help` to see optional arguments.
