@@ -49,7 +49,7 @@ python train_segmentation.py 'data/segmentation/images/' 'data/segmentation/mask
 ## How to predict segmentation masks
 1. Download the trained models from [this link](https://drive.google.com/file/d/1LMNqzilxm0us4UULOT3LHTkkybe5-uTz/view?usp=share_link).
 2. Unzip the downloaded file and move the extracted folder `models` to the local repository folder.
-3. Predict segmentation masks for input volumes stored in `<path/to/volumes>`:
+3. Predict segmentation masks for input volumes stored in `<path/to/volumes>` and save results in `<path/to/output>`:
 ```
 python predict.py <path/to/volumes> <path/to/output> --use_gpu
 ```
