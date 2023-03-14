@@ -20,7 +20,7 @@ Before running any script, you have to setup this repository in your local machi
 ```
 
 ## How to run executables to reproduce submitted results
-1. Download the trained models from [this link](https://drive.google.com/file/d/1AWZsEGoatcrchcGLRvbZE6vIPXcihYJG/view?usp=sharing).
+1. Download the trained models from [this link](https://drive.google.com/file/d/1LMNqzilxm0us4UULOT3LHTkkybe5-uTz/view?usp=share_link).
 2. Unzip the downloaded file and move the extracted folder `models` to the local repository folder.
 3. Run bash scripts:
 ```
