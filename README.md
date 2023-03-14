@@ -31,6 +31,6 @@ Before running any script, you have to setup this repository in your local machi
 ```
 
 ## How to train models
-1. Download the training data from [this link](https://drive.google.com/file/d/19PR8EMcDpdp3fxlh6Bgag-T5k4-AijXj/view?usp=sharing). Access to data is currently restricted. Please contact Roberto Rojas [roberto.rojasp06@gmail.com](roberto.rojasp06@gmail.com) to request permission for downloading the data.
+1. Download the training data from [this link](https://drive.google.com/file/d/19PR8EMcDpdp3fxlh6Bgag-T5k4-AijXj/view?usp=sharing). Access to data is currently restricted. Please contact Roberto Rojas [roberto.rojasp06@gmail.com]((mailto:roberto.rojasp06@gmail.com)) to request permission for downloading the data.
 
 ## How to predict segmentation masks
