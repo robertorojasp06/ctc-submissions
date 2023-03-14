@@ -25,6 +25,8 @@ Before running any script, you have to setup this repository in your local machi
 3. Run bash scripts
 ```
 ./Fluo-N3DL-DRO-01.sh
+```
+```
 ./Fluo-N3DL-DRO-02.sh
 ```
 
