@@ -9,10 +9,10 @@ from unet3d.model import UNet3D
 from pipeline.pipeline import Pipeline
 
 PATH_TO_DET_MODEL = os.path.join(
-    'models', 'detection', 'unet3d_detection.pth'
+    'models', 'detection', 'model_ep37.pth'
 )
 PATH_TO_SEG_MODEL = os.path.join(
-    'models', 'segmentation', 'unet3d_segmentation.pth'
+    'models', 'segmentation', 'model_ep66.pth'
 )
 
 
@@ -87,9 +87,9 @@ def main():
         seg_params=params['segmentation'],
         device=device
     )
-    paths_to_volumes = glob(
+    paths_to_volumes = sorted(glob(
         os.path.join(args.path_to_volumes, '*' + args.extension)
-    )
+    ))
     for path in paths_to_volumes:
         filename = os.path.basename(path)
         volume = io.imread(path)

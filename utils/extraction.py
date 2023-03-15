@@ -89,9 +89,13 @@ def insert_patch(volume, patch, center, type='positive'):
         Output image with inserted patches.
     """
     output_image = copy.deepcopy(volume)
-    starting_z = center[0]-int(patch.shape[0]/2.0)
-    starting_row = center[1]-int(patch.shape[1]/2.0)
-    starting_col = center[2]-int(patch.shape[2]/2.0)
+    output_image = np.pad(
+        output_image,
+        ((patch.shape[0],) * 2, (patch.shape[1],) * 2, (patch.shape[2],) * 2)
+    )
+    starting_z = center[0]-int(patch.shape[0]/2.0)+patch.shape[0]
+    starting_row = center[1]-int(patch.shape[1]/2.0)+patch.shape[1]
+    starting_col = center[2]-int(patch.shape[2]/2.0)+patch.shape[2]
     if type == 'all':
         output_image[starting_z:(starting_z+patch.shape[0]),
                      starting_row:(starting_row+patch.shape[1]),
@@ -106,4 +110,8 @@ def insert_patch(volume, patch, center, type='positive'):
                                                          cols[idx]]
     else:
         raise ValueError("parameter 'type' not supported.")
-    return output_image
+    return output_image[
+        patch.shape[0]:-patch.shape[0],
+        patch.shape[1]:-patch.shape[1],
+        patch.shape[2]:-patch.shape[2],
+    ]
